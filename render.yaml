@@ -4,7 +4,7 @@ services:
     runtime: node
     plan: free
     buildCommand: corepack enable && pnpm install --frozen-lockfile --no-prod && pnpm exec tsup apps/game-server/src/index.ts --format esm --platform node --target node22 --out-dir dist/server --no-splitting
-    startCommand: node dist/server/index.js
+    startCommand: pnpm exec tsx apps/game-server/src/index.ts
     healthCheckPath: /health
     envVars:
       - key: NODE_VERSION
