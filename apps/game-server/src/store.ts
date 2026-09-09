@@ -1,3 +1,95 @@
+Skip to content
+lmayzelinstructorly-ux
+jpspg
+Repository navigation
+Code
+Issues
+Pull requests
+Actions
+Projects
+Wiki
+Security and quality
+Insights
+Settings
+Files
+Go to file
+t
+T
+apps
+game-server/src
+app.ts
+engine.ts
+index.ts
+security.ts
+store.ts
+web
+docs
+packages
+supabase
+tests
+package.json
+pnpm-lock.yaml
+pnpm-workspace.yaml
+render.yaml
+tsconfig.json
+vercel.json
+vite.config.ts
+vitest.config.ts
+jpspg/apps/game-server/src
+/
+store.ts
+in
+main
+
+Edit
+
+Preview
+Indent mode
+
+Spaces
+Indent size
+
+2
+Line wrap mode
+
+No wrap
+Editing store.ts file contents
+  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { mkdirSync } from "node:fs";
 import { dirname } from "node:path";
@@ -34,67 +126,4 @@ export class Store {
         .from("jpspg_records")
         .select("payload")
         .eq("kind", kind)
-        .limit(10000);
-      if (error) throw new Error("Database temporarily unavailable");
-      return (data || []).map((x) => x.payload as T);
-    }
-    return this.db!.prepare("SELECT payload FROM records WHERE kind=?")
-      .all(kind)
-      .map((x) => JSON.parse(x.payload as string));
-  }
-  async get<T extends Entity = Entity>(
-    kind: string,
-    id: string,
-  ): Promise<T | undefined> {
-    if (this.remote) {
-      const { data, error } = await this.remote
-        .from("jpspg_records")
-        .select("payload")
-        .eq("kind", kind)
-        .eq("id", id)
-        .maybeSingle();
-      if (error) throw new Error("Database temporarily unavailable");
-      return data?.payload;
-    }
-    const r = this.db!.prepare(
-      "SELECT payload FROM records WHERE kind=? AND id=?",
-    ).get(kind, id);
-    return r ? JSON.parse(r.payload as string) : undefined;
-  }
-  async put(kind: string, value: Entity) {
-    if (this.remote) {
-      const { error } = await this.remote
-        .from("jpspg_records")
-        .upsert(
-          { kind, id: value.id, payload: value },
-          { onConflict: "kind,id" },
-        );
-      if (error) throw new Error("Could not save data");
-    } else
-      this.db!.prepare(
-        "INSERT INTO records(kind,id,payload) VALUES (?,?,?) ON CONFLICT(kind,id) DO UPDATE SET payload=excluded.payload",
-      ).run(kind, value.id, JSON.stringify(value));
-  }
-  async remove(kind: string, id: string) {
-    if (this.remote) {
-      const { error } = await this.remote
-        .from("jpspg_records")
-        .delete()
-        .eq("kind", kind)
-        .eq("id", id);
-      if (error) throw new Error("Could not remove data");
-    } else
-      this.db!.prepare("DELETE FROM records WHERE kind=? AND id=?").run(
-        kind,
-        id,
-      );
-  }
-  transaction<T>(fn: () => Promise<T>): Promise<T> {
-    const next = this.queue.then(fn, fn);
-    this.queue = next.catch(() => {});
-    return next;
-  }
-  close() {
-    this.db?.close();
-  }
-}
+Use Control + Shift + m to toggle the tab key moving focus. Alternatively, use esc then tab to move to the next interactive element on the page.
